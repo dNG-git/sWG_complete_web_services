@@ -1,0 +1,346 @@
+<html>
+  <head>
+<BASE HREF="http://www.xmlrpc.com.way_back_stub/discuss/msgReader$1208">
+<title>RFC: system.multicall</title>
+ <style type="text/css">
+
+	</style> <script language="JavaScript">
+  <!-- Begin hiding from older browsers
+
+  //End hiding-->
+  </script> </head> <body bgcolor="#DCDCDC" alink="#FF0000" vlink="#800080" link="#0000FF" text="#000000" topmargin="5" leftmargin="5" marginheight="5" marginwidth="5"> <p>
+
+<center><p><script type="text/javascript"><!--
+
+google_ad_client = "pub-3843533577617558";
+
+google_ad_width = 468;
+
+google_ad_height = 60;
+
+google_ad_format = "468x60_as";
+
+google_ad_channel ="";
+
+google_ad_type = "text";
+
+google_color_border = "000000";
+
+google_color_bg = "F0F0F0";
+
+google_color_link = "0000FF";
+
+google_color_url = "008000";
+
+google_color_text = "000000";
+
+//--></script>
+
+<script type="text/javascript"
+
+  src="http://web.archive.org/web/20060824100531js_/http://pagead2.googlesyndication.com/pagead/show_ads.js">
+
+</script></p></center><p>
+
+<div align="center"></div> <center>
+  <table width="741" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top" background="http://static.userland.com/weblogsCom/images/scripting2weblogscom/leftBG.jpg"><img src="http://images.scripting.com/archiveScriptingCom/2005/03/07/xmlrpctopleft.gif" width="11" height="163"></td>
+      <td valign="top" bgcolor="#FFFFFF">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" background="http://images.scripting.com/archiveScriptingCom/2004/12/02/xmlRpcHeader.jpg">
+          <tr background="http://static.userland.com/images/XML-RPC/HeaderBG.jpg">             <td><img src="http://images.scripting.com/archiveScriptingCom/2005/03/07/xmlrpcheader.gif" width="718" height="163" usemap="#Map" border="0"></td>
+          </tr>
+        </table>
+        <map name="Map"><area shape="rect" coords="9,98,371,163" href="/" alt="XML-RPC.Com" title="XML-RPC.Com"><area shape="rect" coords="3,12,135,33" href="http://www.userland.com" alt="UserLand" title="UserLand"></map>         <table width="718" border="0" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF">
+          <tr>             <td width="100%" valign="top">               <table width="718" border="0" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF">
+                <tr>                   <td width="100%" valign="top">                     <table border="0" cellspacing="0" cellpadding="0">
+                      <tr>                         <td><i>&nbsp;&nbsp;&nbsp;</i></td>
+                        <td><i><font size="-1">Simple cross-platform distributed computing, based on the standards of the Internet.</font></i> </td>
+                      </tr>
+                    </table>
+                    <br>
+                  </td>
+                  <td align="right" width="108" valign="top"><img src="http://static.userland.com/images/XML-RPC/doveBase.jpg" width="108" height="12"></td>
+                </tr>
+              </table>
+                          </td>
+          </tr>
+        </table>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr align="right">             <td><img src="http://static.userland.com/weblogsCom/images/uservilleweblogscom/shadow.jpg" width="718" height="14"></td>
+          </tr>
+        </table>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>             <td width="100" valign="top">               <table width="100" border="0" cellspacing="0" cellpadding="7">
+                <tr align="right">                   <td><font size="-2"><p><a href="/" class="navigatorLink">Home</a></p><p><a href="/spec" class="navigatorLink">Spec</a></p><p><a href="/news" class="navigatorLink">News</a></p><p><a href="http://groups.yahoo.com/group/xml-rpc" class="navigatorLink">Mail List</a></p><p><a href="/directory/1568" class="navigatorLink">Directory</a></p><p><a href="/discuss/" class="navigatorLink">Discuss</a></p><p><a href="/discuss/edit/newTopic" class="navigatorLink">New Topic</a></p><p><a href="http://xmlrpc-c.sourceforge.net/xmlrpc-howto/xmlrpc-howto.html" class="navigatorLink">HowTo</a></p><p><a href="/stats/mostReadMessages" class="navigatorLink">Top 50</a></p><p><a href="http://www.soapware.org/" class="navigatorLink">SOAP</a></p><p><a href="http://blogs.law.harvard.edu/tech/rss" class="navigatorLink">RSS</a></p><p><a href="http://www.opml.org/" class="navigatorLink">OPML</a></p><p><a href="http://www.w3.org/TR/1998/REC-xml-19980210" class="navigatorLink">XML</a></p></font><br>
+                    <br><br>
+                    <table border="0" cellpadding="0" cellspacing="0" bgcolor="#000000">
+	<tr bgcolor="black">
+		<td>
+			<table border="0" cellpadding="3" cellspacing="1" bgcolor="black">
+				<tr>
+					<td valign="top" align="right" bgcolor="black">
+						<font color="white" size="-1"><b>Members</b></font>
+						</td>
+					</tr>
+				<tr>
+					<td valign="top" align="right" bgcolor="white">
+						<font size="-1">
+							<a href="http://www.xmlrpc.com/member/signup">Join Now</a><br>
+							</font>
+						</td>
+					</tr>
+				<tr>
+					<td valign="top" align="right" bgcolor="white">
+						<font size="-1">
+							<a href="http://www.xmlrpc.com/member/login">Login</a><br>
+							</font>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+ 
+                    <p>                   </td>
+                </tr>
+              </table>
+            </td>
+            <td bgcolor="#DDDDDD" width="1"><img src="http://static.userland.com/weblogsCom/images/scripting2weblogscom/shim.gif" width="1" height="1">             </td>
+            <td width="100%" valign="top">               <table width="100%" border="0" cellspacing="0" cellpadding="7">
+                <tr>                   <td>
+                    <p></p>
+                    <h2>RFC: system.multicall</h2>
+                    <p><table cellpadding="0" cellspacing="0" border="0">
+  <tr>
+    <td><b>Author:</b></td>
+    <td width="15" rowspan="6">&nbsp;</td>
+    <td><a href="http://www.xmlrpc.com/profiles/$11">Eric Kidd</a></td>
+    <td width="30" rowspan="6">&nbsp;</td>
+    <td rowspan="5"></td>
+    </tr>
+  <tr>
+    <td><b>Posted:</b></td>
+    <td>1/25/2001; 1:34:52 PM</td>
+    </tr>
+  <tr>
+    <td><b>Topic:</b></td>
+    <td><a href="http://www.xmlrpc.com/discuss/msgReader$1208?mode=topic" class="dmTopicLink">RFC: system.multicall</a></td>
+    </tr>
+  <tr>
+    <td><b>Msg #:</b></td>
+    <td><a href="http://www.xmlrpc.com/discuss/msgReader$1208?mode=topic" class="dmMessageNumberLink">1208</a> (top msg in thread)</td>
+    </tr>
+  <tr>
+    <td><b>Prev/Next:</b></td>
+    <td><a href="http://www.xmlrpc.com/discuss/msgReader$1207?mode=day" class="dmPreviousMessageLink">1207</a>/<a href="http://www.xmlrpc.com/discuss/msgReader$1209?mode=day" class="dmNextMessageLink">1209</a></td>
+    </tr>
+  <tr>
+    <td><b>Reads:</b></td>
+    <td>42505</td>
+    </tr>
+  </table>
+<br>
+After speaking with Adrian Likins at RedHat, I've been thinking about ways to boxcar XML-RPC calls without changing the official specification.<p>
+
+<b>What's "boxcarring"?</b><p>
+
+Basically, it involves packing multiple, asynchronous function calls into one big request, and shipping them all off to the server at once.<p>
+
+<b>Why would anybody want to do this?</b><p>
+
+HTTP round-trip latency ranges from bad to awful. So it can be much faster to make one big request than ten little ones.<p>
+
+Also, some people want to use XML-RPC to script local applications. They need to perform one context-swap per request, which can really kill throughput. Again, it would be much better to make one big request than ten little ones.<p>
+
+<b>Can't you do this with HTTP pipelining?</b><p>
+
+In theory, who knows? In practice, no. I spent this afternoon watching pipelined HTTP requests on the wire, and they appear to require at least one round-trip TCP packet per XML-RPC function call. If you've got a 250 millisecond ping between your sites, that means a half-second per XML-RPC call. Period.<p>
+
+(And if the W3C's own reference code can't do any better than this, then you can safely assume that none of us mere mortals will ever figure it out.)<p>
+
+<b>But you can't change the XML-RPC specification!</b><p>
+
+I know. I don't want to patch all the clients, either. So let's look for a different solution.<p>
+
+<b>The Proposal</b><p>
+
+<blockquote><pre>
+array system.multicall(array)
+</pre></blockquote><p>
+
+Takes an array of XML-RPC calls encoded as structs of the form (in a Pythonish notation here):<p>
+
+<blockquote><pre>
+&#123;'methodName': string, 'params': array&#125;
+</pre></blockquote><p>
+
+The array of structs may be of any length. In particular, empty lists are supported, so clients can test for the presence of the function without performing any actions.<p>
+
+Returns an array of responses. There will be one response for each call in the original array. The result will either be a one-item array containing the result value (this mirrors the use of &lt;params> in &lt;methodResponse>), or a struct of the form found <i>inside</i> the standard &lt;fault> element.  (Please see the <a href="#example">example</a> below.)<p>
+
+If some items in the original call array are not valid call structs (as described above), the implementation must return a struct-with-fault-information in the corresponding response position. Under no circumstances may the implementation return a list of the wrong length.<p>
+
+To prevent stack overflow attacks against compiled XML-RPC servers, system.multicall MAY refuse to process recursive calls to itself.<p>
+
+Of course, system.multicall may return a fault of its own, using the normal XML-RPC fault mechanism. This probably means it that system.multicall isn't implemented, and you'll have to send all your requests in the normal fashion.<p>
+
+<b>Virtues</b><p>
+
+<ul>
+<li>We haven't changed the XML-RPC specification.</li>
+<li>We haven't required any heavy HTTP wizardry.</li>
+<li>If a given XML-RPC library doesn't support this automatically, developers can provide it themselves. I'm betting this is less than twenty lines of Python.</li>
+<li>Clients can test for the presence of system.multicall either by using system.listMethods or by calling system.multicall with an empty list.</li>
+<li>Smart XML-RPC libraries can do all the work behind the scenes.</li>
+</ul><p>
+
+<b><a name="example">An Example</a></b><p>
+
+This example uses a Python-like notation to represent XML-RPC values.  If you have any questions about what the corresponding XML looks like, please ask.<p>
+
+A sample argument to system.multicall:<p>
+
+<blockquote><pre>
+[&#123;'methodName': 'system.add', 'params': [2, 2]&#125;,
+ &#123;'methodName': 'test.nonexistant', 'params': [1]&#125;,
+ &#123;'methodName': 'system.multicall', 'params': []&#125;,
+ &#123;'methodName': 'system.multicall'&#125;,
+ 'this is not a struct',
+ &#123;'methodName': 'system.add', 'params': [4, 4]&#125;]
+</pre></blockquote><p>
+
+The return value:<p>
+
+<blockquote><pre>
+[[4],
+ &#123;'faultCode': 123,
+  'faultString': 'No such method test.nonexistant'&#125;,
+ &#123;'faultCode': 456,
+  'faultString': 'Recursive system.multicall forbidden'&#125;,
+ &#123;'faultCode': 789,
+  'faultString': 'Missing params'&#125;,
+ &#123;'faultCode': 987,
+  'faultString': 'system.multicall expected struct'&#125;,
+ [8]]
+</pre></blockquote><p>
+
+Notice that regular return values are always nested inside a one-element array.  This allows you to return structs from functions without confusing them with faults.<p>
+
+The fault codes and fault strings used in the above example are arbitrary.<p>
+
+<b>Implementations</b><p>
+
+A transparent, server-side implementation of system.multicall is available in the CVS version of xmlrpc-c.<p>
+
+Thank you for any feedback on this proposal!<p>
+
+Cheers,<br>
+Eric
+<p><hr><b>There are responses to this message:</b></p><ul><li><p><a href="http://www.xmlrpc.com/discuss/msgReader$1576?mode=day">system.multicall update & test suite</a>, Eric Kidd, 4/9/01; 12:11:12 PM</p></li><ul><li><p><a href="http://www.xmlrpc.com/discuss/msgReader$1577?mode=day">Re: system.multicall update & test suite</a>, Dave Winer, 4/9/01; 4:56:23 PM</p></li></ul><li><p><a href="http://www.xmlrpc.com/discuss/msgReader$1572?mode=day">Re: RFC: system.multicall</a>, Dave Winer, 4/9/01; 9:38:49 AM</p></li><ul><li><p><a href="http://www.xmlrpc.com/discuss/msgReader$1574?mode=day">Re: RFC: system.multicall</a>, Eric Kidd, 4/9/01; 10:47:48 AM</p></li></ul><li><p><a href="http://www.xmlrpc.com/discuss/msgReader$1216?mode=day">Re: RFC: system.multicall</a>, Hung Jung Lu, 1/26/01; 7:25:58 PM</p></li><li><p><a href="http://www.xmlrpc.com/discuss/msgReader$1210?mode=day">XML-RPC Benchmark</a>, Eric Kidd, 1/25/01; 8:32:13 PM</p></li><ul><li><p><a href="http://www.xmlrpc.com/discuss/msgReader$1217?mode=day">Subscription and notification in C?</a>, Dave Winer, 1/27/01; 10:46:29 AM</p></li><ul><li><p><a href="http://www.xmlrpc.com/discuss/msgReader$1234?mode=day">Re: Subscription and notification in C?</a>, Brad Pettit, 1/30/01; 2:12:43 PM</p></li><li><p><a href="http://www.xmlrpc.com/discuss/msgReader$1219?mode=day">Re: Subscription and notification in C?</a>, Eric Kidd, 1/27/01; 6:21:57 PM</p></li></ul></ul></ul><p>
+
+ </p>
+                    <p> 
+                    </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </td>
+      <td valign="top" background="http://static.userland.com/weblogsCom/images/scripting2weblogscom/rightBG.jpg"><img src="http://static.userland.com/weblogsCom/images/scripting2weblogscom/topRightCorner.jpg" width="12" height="163"></td>
+    </tr>
+    <tr>
+      <td><img src="http://static.userland.com/weblogsCom/images/scripting2weblogscom/bottomLeftCorner.jpg" width="11" height="35"></td>
+      <td>         <table width="100%" border="0" cellspacing="0" cellpadding="0" background="http://static.userland.com/weblogsCom/images/scripting2weblogscom/tableBaseBG.jpg">
+          <tr>             <td><img src="http://static.userland.com/weblogsCom/images/scripting2weblogscom/tableBaseLeft.jpg" width="457" height="35"></td>
+            <td align="right"><img src="http://static.userland.com/weblogsCom/images/uservilleweblogscom/tableBaseRight.jpg" width="261" height="35"></td>
+          </tr>
+        </table>
+      </td>
+      <td><img src="http://static.userland.com/weblogsCom/images/scripting2weblogscom/bottomRightBG.jpg" width="12" height="35"></td>
+    </tr>
+  </table>
+  <img src="http://static.userland.com/weblogsCom/images/scripting2weblogscom/shim.gif" width="1" height="1">&#169;   Copyright 2004-2006 Scripting News, 
+  Inc.<br>&#169;   Copyright 1998-2004 UserLand Software, 
+  Inc.<br>
+  XML-RPC is a trademark of UserLand Software, Inc.<br>
+  Last update: Monday, April 9, 2001 at 12:45:53 PM Pacific.<br>
+  <br>
+  <a href="http://manila.userland.com/" title="Create your own Manila site in minutes. Everyone's doing it!"><img src="http://www.scripting.com/images/thisIsAManilaSite2.gif" width="88" height="31" border="0" alt="Create your own Manila site in minutes. Everyone's doing it!"></a>   <script language="JavaScript" type="text/javascript"><!--
+	var imageUrl = "http://counters.scripting.com/counters/count.gif";
+	var imageTag = "<img src=\"" + imageUrl + "?group=xmlRpc&referer=" + escape (document.referrer) + "\" height=\"1\" width=\"1\">";
+	document.write (imageTag);
+	--></script>
+<script type="text/javascript" src="http://web.archive.org/web/20060824100531js_/http://embed.technorati.com/embed/nqdi6e85f5.js"></script>
+</center>
+  </body>
+  
+<!-- SOME SCRIPT SRC'S ON THIS PAGE HAVE BEEN REWRITTEN BY THE WAYBACK MACHINE
+OF THE INTERNET ARCHIVE IN ORDER TO PRESERVE THE TEMPORAL INTEGRITY OF THE SESSION. -->
+
+
+<SCRIPT language="Javascript">
+<!--
+
+// FILE ARCHIVED ON 20060824100531 AND RETRIEVED FROM THE
+// INTERNET ARCHIVE ON 20090326102242.
+// JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+// ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+// SECTION 108(a)(3)).
+
+   var sWayBackCGI = "http://web.archive.org/web/20060824100531/";
+
+   function xResolveUrl(url) {
+      var image = new Image();
+      image.src = url;
+      return image.src;
+   }
+   function xLateUrl(aCollection, sProp) {
+      var i = 0;
+      for(i = 0; i < aCollection.length; i++) {
+         var url = aCollection[i][sProp];         if (typeof(url) == "string") { 
+          if (url.indexOf("mailto:") == -1 &&
+             url.indexOf("javascript:") == -1
+             && url.length > 0) {
+            if(url.indexOf("http") != 0) {
+                url = xResolveUrl(url);
+            }
+            url = url.replace('.way_back_stub','');
+            aCollection[i][sProp] = sWayBackCGI + url;
+         }
+         }
+      }
+   }
+
+   xLateUrl(document.getElementsByTagName("IMG"),"src");
+   xLateUrl(document.getElementsByTagName("A"),"href");
+   xLateUrl(document.getElementsByTagName("AREA"),"href");
+   xLateUrl(document.getElementsByTagName("OBJECT"),"codebase");
+   xLateUrl(document.getElementsByTagName("OBJECT"),"data");
+   xLateUrl(document.getElementsByTagName("APPLET"),"codebase");
+   xLateUrl(document.getElementsByTagName("APPLET"),"archive");
+   xLateUrl(document.getElementsByTagName("EMBED"),"src");
+   xLateUrl(document.getElementsByTagName("BODY"),"background");
+   xLateUrl(document.getElementsByTagName("TD"),"background");
+   xLateUrl(document.getElementsByTagName("INPUT"),"src");
+   var forms = document.getElementsByTagName("FORM");
+   if (forms) {
+       var j = 0;
+       for (j = 0; j < forms.length; j++) {
+              f = forms[j];
+              if (typeof(f.action)  == "string") {
+                 if(typeof(f.method)  == "string") {
+                     if(typeof(f.method) != "post") {
+                        f.action = sWayBackCGI + f.action;
+                     }
+                  }
+              }
+        }
+    }
+
+
+//-->
+</SCRIPT>
+
+</html>

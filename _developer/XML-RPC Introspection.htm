@@ -1,0 +1,326 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD><TITLE>XML-RPC Introspection</TITLE></HEAD>
+<BODY>
+
+<h1>XML-RPC Introspection</h1>
+
+<p>This document is a specification for the XML-RPC Introspection
+protocol.  XML-RPC Introspection is a facility of XML-RPC clients and
+servers that enables a client to learn from a server what XML-RPC
+methods it implements.
+
+<p>XML-RPC Introspection is not part of the <a
+href="www.xmlrpc.com/spec">XML-RPC standard</a>.  It is not part
+of any recognized standard.  This document merely describes a de facto
+standard that has been implemented by lots of XML-RPC clients and
+servers.  Various other documents have existed that describe this
+protocol, but this document is more specific than any of them.
+
+<p>XML-RPC Introspection was invented around 2001 by Edd Dumbill.
+
+<h2>About This Document</h2>
+
+<p>Bryan Henderson (bryanh@giraffe-data.com) wrote and maintains this
+document.
+
+<p>This document was first published in November 2007.
+
+<p>This document does not presume to prescribe to anyone how to
+implement an XML-RPC client or server, or whether to call an
+implementation XML-RPC Introspection, especially since most of the
+leavesoftware to do so was already written and in use before this document
+existed.  Rather, its main goal is to describe current practice.  If
+you know of implementations that vary from this specification, let
+Bryan know so he can update the specification.
+
+<p>A secondary goal of this specification is to provide a common
+recommendation for new implementations of XML-RPC clients and servers,
+to maximize the chance that independent designers will arrive at
+compatible designs.
+
+<h2>Identification</h2>
+
+<p>This specification specifies XML-RPC Introspection Version 1.
+
+<h3>getCapabilties</h3>
+
+<P>For the purposes of the <a
+href="http://tech.groups.yahoo.com/group/xml-rpc/message/2897">getCapabilities</b>
+method</a>, cite XML-RPC Introspection as follows:
+
+<dl>
+<dt>name
+<dd>&quot;introspect&quot;
+<dt><b>specUrl</b>
+<dd>http://xmlrpc-c.sourceforge.net/xmlrpc-c/introspection.html
+<dt><b>specVersion</b>
+<dd>1
+</dl>
+
+
+<h2>The Methods</h2>
+
+<p>XML-RPC Introspection consists of 3 XML-RPC methods.  For a server
+to provide XML-RPC Introspection service means it has these methods.
+
+<p>A server might have XML-RPC Introspection service and yet keep some
+or all of its methods secret.  I.e. XML-RPC Introspection does not require
+a server to report on its methods; only that for the ones that it does,
+it report a certain way.
+
+
+<h3>system.listMethods</h3>
+
+<p>This method returns a list of the methods the server has, by name.
+
+<h5>Name</h5>
+
+<p><tt>system.listMethods</tt>.
+
+<h5>Parameters</h5>
+
+<p>There are no parameters.
+
+<h5>Result</h5>
+
+<p>The result is an XML-RPC array of XML-RPC strings.  The value of
+each element is the name of a method that the server implements.  The
+introspection methods are not excluded.
+
+<p>Each element is unique (the same name doesn't appear twice in the list).
+
+<p>It is not required that the list be a complete list of the
+methods the server implements; i.e. the server may choose to keep some
+secret.  But it is required that any method in the list actually
+exist on the server -- the server may not fail an RPC with a &quot;no
+such method&quot; error if its name appears in this list.
+
+<h5>Example:</h5>
+
+<p>Call:
+
+<pre>
+    &lt;methodCall&gt;
+      &lt;methodName&gt;system.listMethods&lt;/methodName&gt;
+      &lt;params&gt;&lt;/params&gt;
+      &lt;/methodCall&gt;
+</pre>
+
+<p>Response:
+
+<pre>
+    &lt;methodResponse&gt;
+      &lt;params&gt;
+        &lt;param&gt;
+          &lt;value&gt;&lt;array&gt;&lt;data&gt;
+            &lt;value&gt;
+              &lt;string&gt;system.listMethods&lt;/string&gt;
+              &lt;/value&gt;
+            &lt;value&gt;
+              &lt;string&gt;system.methodSignature&lt;/string&gt;
+              &lt;/value&gt;
+            &lt;value&gt;
+              &lt;string&gt;system.methodHelp&lt;/string&gt;
+              &lt;/value&gt;
+            &lt;value&gt;
+              &lt;string&gt;system.multicall&lt;/string&gt;
+              &lt;/value&gt;
+            &lt;value&gt;
+              &lt;string&gt;system.shutdown&lt;/string&gt;
+              &lt;/value&gt;
+            &lt;value&gt;
+              &lt;string&gt;sample.add&lt;/string&gt;
+              &lt;/value&gt;
+            &lt;/data&gt;&lt;/array&gt;&lt;/value&gt;
+          &lt;/param&gt;
+        &lt;/params&gt;
+      &lt;/methodResponse&gt;
+</pre>
+
+
+<h3>system.methodSignature</h3>
+
+<p>This method returns a description of the argument format a
+particular method expects.
+
+<h5>Name</h5>
+
+<p><tt>system.methodSignature</tt>.
+
+<h5>Parameters</h5>
+
+<p>The method takes one parameter, an XML-RPC string.  Its value is
+the name of the XML-RPC method about which information is being requested.
+
+<h5>Result</h5>
+
+<p>The result is an XML-RPC array, with each element representing one
+method signature.  The array is a list of the signatures of the
+method.  There are no duplicate signatures.  The list does not
+necessarily contain all possible signatures (it would not be realistic
+to expect it to do so, because some methods are so flexible that they
+have an infinite set of signatures).  We refer to the signatures that
+the server is willing to report as the signatures that the
+introspection machinery &quot;knows.&quot;
+
+<p>A signature is a description of parameter and result types for a
+call to a method.  A method can have multiple signatures; for example
+a method might take either a host name and port number or just
+a host name (and default the port number).
+
+<p>The array entry that represents a signature is an array of XML-RPC
+strings, with at least one element.  The first element tells the type
+of the method's result.  The rest tell the types of the method's
+parameters, in order.
+
+<p>Each of these strings identifies an XML-RPC type by the XML element
+name for it.  For example, if the parameter is an XML-RPC string, the
+value is <tt>string</tt>.  Where an XML-RPC type has multiple
+equivalent XML element names, the signature may use any one of them.
+For example, the XML-RPC integer type can be represented either by
+<tt>&lt;int&gt;</tt> or <tt>&lt;i4&gt;</tt>.
+
+<p>If the server implements an extension to XML-RPC that recognizes
+additional data types, the XML-RPC Introspection definition should be
+considered extended accordingly.
+
+<p>The signature may alternatively use an upper case translation of
+the XML element name.  (This is a really bad idea, but we've seen a
+server do it, so if a client wants to be maximally interoperable, it
+must recognize this alternative).
+
+<p>The <b>system.methodSignature</b> result may indicate that the
+introspection machinery simply does not know what signatures the
+method has.  We call this the &quot;I don't know&quot; result.  The
+&quot;I don't know&quot; result consists of an XML-RPC string with
+value <tt>undef</tt>.  Alternatively, the result can be anything at
+all that is not an XML-RPC array.  The string <tt>undef</tt> is
+preferred, but many servers exist that generate other things instead.
+
+<p>Note that an empty array is not a valid result.  (Considering that
+if a method has 10 signatures and the server chooses not to report 5
+of them, it can just return an array of 5 elements, it's
+<em>logical</em> that if it chooses not to report any of them, it
+would return an empty array.  But the original designer of XML-RPC
+Introspection didn't go that way).
+
+<p>Note that a signature does not give details of a complex type; it
+just gives the basic XML-RPC type -- array or structure.  E.g. if the
+result of a method is a structure with members &quot;foo&quot; and
+&quot;bar&quot;, <b>system.methodSignature</b> gives the type of the
+result simply as structure.
+
+<h5>Errors</h5>
+
+<p>The RPC fails if the server does not have a method by the indicated
+name, or does not want to admit that it does.  But if the method name
+appears in the response to <b>system.listMethods</b>, the RPC does not
+fail this way.
+
+<h5>Example:</h5>
+
+<p>Call:
+
+<pre>
+    &lt;methodCall&gt;
+      &lt;methodName&gt;system.methodSignature&lt;/methodName&gt;
+      &lt;params&gt;
+        &lt;param&gt;&lt;value&gt;
+          &lt;string&gt;sample.add&lt;/string&gt;
+          &lt;/value&gt;&lt;/param&gt;
+        &lt;/params&gt;
+      &lt;/methodCall&gt;
+</pre>
+
+<p>Response:
+
+<pre>
+    &lt;methodResponse&gt;
+      &lt;params&gt;
+        &lt;param&gt;
+          &lt;value&gt;&lt;array&gt;&lt;data&gt;
+            &lt;value&gt;&lt;array&gt;&lt;data&gt;
+              &lt;value&gt;
+                &lt;string&gt;int&lt;/string&gt; &lt;!-- return value --&gt;
+                &lt;/value&gt;
+              &lt;value&gt;
+                &lt;string&gt;int&lt;/string&gt; &lt;!-- 1st param --&gt;
+                &lt;/value&gt;
+              &lt;value&gt;
+                &lt;string&gt;int&lt;/string&gt; &lt;!-- 2nd param --&gt;
+                &lt;/value&gt;
+              &lt;/data&gt;&lt;/array&gt;&lt;/value&gt;
+            &lt;/data&gt;&lt;/array&gt;
+          &lt;/value&gt;&lt;/param&gt;
+        &lt;/params&gt;
+      &lt;/methodResponse&gt;
+</pre>
+
+<h3>system.methodHelp</h3>
+
+<p>This method returns a text description of a particular method.
+
+<h5>Name</h5>
+
+<p><tt>system.methodHelp</tt>.
+
+<h5>Parameters</h5>
+
+<p>The method takes one parameter, an XML-RPC string.  Its value is
+the name of the XML-RPC method about which information is being
+requested.
+
+<h5>Result</h5>
+
+<p>The result is an XML-RPC string.  The value of that string is a
+text description, for human use, of the method in question.
+
+<p>The server may give as much or as little detail as it wants,
+including an empty string.
+
+<p>The string may alternatively contain HTML markup (i.e. not be
+precisely text).  A client is not required to recognize it as such;
+i.e. it can leave the HTML markup for human interpretation like the rest of
+the string's value.
+
+<h5>Errors</h5>
+
+<p>The RPC fails if the server does not have a method by the indicated
+name, or does not want to admit that it does.  But if the method name
+appears in the response to <b>system.listMethods</b>, the RPC does not
+fail this way.
+
+<h5>Example:</h5>
+
+<p>Call:
+
+<pre>
+    &lt;methodCall&gt;
+      &lt;methodName&gt;system.methodHelp&lt;/methodName&gt;
+      &lt;params&gt;
+        &lt;param&gt;&lt;value&gt;
+          &lt;string&gt;sample.add&lt;/string&gt;
+          &lt;/value&gt;&lt;/param&gt;
+        &lt;/params&gt;
+      &lt;/methodCall&gt;
+</pre>
+
+<p>Response:
+
+<pre>
+    &lt;methodResponse&gt;
+      &lt;params&gt;
+        &lt;param&gt;&lt;value&gt;
+          &lt;string&gt;This method adds two integers together
+            &lt;/string&gt;
+          &lt;/value&gt;&lt;/param&gt;
+        &lt;/params&gt;
+      &lt;/methodResponse&gt;
+</pre>
+
+</body>
+</html>
+
+
+

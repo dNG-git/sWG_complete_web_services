@@ -1,0 +1,79 @@
+<h1>Specification for Fault Code Interoperability, version 20010516</h1>
+
+<p>
+<b>Author:</b> Dan Libby <dan@libby.com>
+</p>
+<p>
+<b>Major Contributors:</b><br>
+- Charles Cook<br>
+- Dave Winer<br>
+- Eric Kidd<br>
+- John Wilson<br>
+- S. Alexander Jacobson<br>
+</p><h2>ChangeLog</h2>
+<table border=1>
+<tr><td>1.0 (draft 1)</td><td>Initial draft release</td></tr>
+<tr><td>1.0 (draft 2)</td><td>Adding reserved range for implementation specific errors and differentiating between unknown encoding and incorrect char for encoding</td></tr>
+<tr><td>20010516</td><td>changed system.interopFaultCodes to system.getCapabilities.<br>changed version to date based integer which is useful for comparisons</td></tr>
+</table><h2>Charter</h2>
+<p>As the number of xml-rpc server implementations has proliferated, so has the number of error codes and
+descriptions.  The charter of this specification is to define a small set of error codes that are
+common across most server implementations so that clients can programmatically handle common errors such as
+"method not found" or "parse error".
+</p><h2>Goals</h2><ul>
+<li>improved interoperability</li>
+<li>ease of implementation</li>
+<li>maintain xml-rpc spec compatibility</li>
+<li>maintain backwards compatibility with existing xmlrpc implementations and apps</li>
+<li>extensibility. both for this spec and for applications & implementations conforming to it</li>
+</ul>
+<h2>Decisions</h2><ul>
+<li>K.I.S.S.  not trying to solve all the world's problems.</li>
+<li>namespaces are nice, but add complexity. this is a simple problem</li>
+<li>define general error classes only.  specifics may be filled in via description</li>
+</ul>
+<h2>Reserved Error Codes</h2>
+
+This spec reserves the numbers -32768 .. -32000, inclusive, for use as pre-defined xmlrpc error codes.  
+Any implementation which conforms to this spec should not allow the application to set an error code
+within this range.  Any error codes within this range not defined explicitly below are reserved for
+future use.  Any implementation which uses them is in non-compliance.<h2>Defined Error Codes</h2><dl>
+<dt>-32700 ---> parse error. not well formed</dt>
+<dt>-32701 ---> parse error. unsupported encoding</dt>
+<dt>-32702 ---> parse error. invalid character for encoding</dt>
+<dt>-32600 ---> server error. invalid xml-rpc.  not conforming to spec.</dt>
+<dt>-32601 ---> server error. requested method not found</dt>
+<dt>-32602 ---> server error. invalid method parameters</dt>
+<dt>-32603 ---> server error. internal xml-rpc error</dt>
+<dt>-32500 ---> application error</dt>
+<dt>-32400 ---> system error</dt>
+<dt>-32300 ---> transport error</dt>
+</dl>
+In addition, the range -32099 .. -32000, inclusive is reserved for implementation defined server
+errors.  Server errors which do not cleanly map to a specific error defined by this spec should
+be assigned to a number in this range.  This leaves the remainder of the space available for
+application defined errors.<h2>system.getCapabilities</h2>
+
+<p>
+<a href='http://groups.yahoo.com/group/xml-rpc/message/2897'>system.getCapabilities</a> is a 
+standard method for determining if a given capability 
+is supported by a given server. For our purposes, a capability may be defined as a layer on 
+top of xml-rpc for which a spec exists.  Thus, support for standard faults is a capability.
+<p>
+Any server which conforms to this spec must implement system.getCapabilities and return a member struct 
+representing the faults capability.  The struct shall be identified by the key "faults_interop". The 
+specUrl should be "http://xmlrpc-epi.sourceforge.net/specs/rfc.fault_codes.php", and the specVersion 
+should be the integer 20010516.  Here is an example response in pseudo-code:
+
+<xmp>
+struct {
+ faults_interop => struct {
+   specUrl => "http://xmlrpc-epi.sourceforge.net/specs/rfc.fault_codes.php",
+   specVersion => 20010516
+ }
+}
+</xmp>
+
+<p> 
+A fault or any other response indicates that the server is not in conformance with this spec, and 
+fault error codes should be treated as application defined error codes.
