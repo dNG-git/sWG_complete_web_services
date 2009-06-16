@@ -225,10 +225,10 @@ Informing the system about available functions
 		$this->functions['get_params'] = true;
 		$this->functions['handle'] = true;
 		$this->functions['is_result_set'] = true;
+		$this->functions['parse'] = true;
 		$this->functions['parse_datetime'] = true;
 		$this->functions['parse_fault'] = true;
-		$this->functions['parse_request'] = true;
-		$this->functions['parse_response'] = true;
+		$this->functions['parse_xmlrpc'] = true;
 		$this->functions['response'] = true;
 		$this->functions['set_fault'] = true;
 
@@ -290,7 +290,7 @@ Set up additional variables :)
 				for ($f_i = 0;$f_i < $f_params;$f_i++)
 				{
 					$f_data_array = $this->xml_object->node_get ("methodCall params param#".$f_i);
-					if (($f_data_array)&&(isset ($f_data_array['value']))) { $f_data_array = $this->parse_request ($f_data_array['value']); }
+					if (($f_data_array)&&(isset ($f_data_array['value']))) { $f_data_array = $this->parse_xmlrpc ($f_data_array['value']); }
 					if ((isset ($f_data_array))&&($f_data_array)) { $this->data[$f_i] = $f_data_array; }
 				}
 			}
@@ -434,9 +434,105 @@ Set up additional variables :)
 		else { return /*#ifdef(DEBUG):direct_debug (7,"sWG/#echo(__FILEPATH__)# -web_service_xmlrpc_handler->is_result_set ()- (#echo(__LINE__)#)",:#*/false/*#ifdef(DEBUG):,true):#*/; }
 	}
 
+	//f// direct_web_service_xmlrpc->parse ($f_data)
+/**
+	* Parse PHP data for XML-RPC output.
+	*
+	* @param  array $f_data XML array tree
+	* @uses   direct_datalinker::define_extra_attributes()
+	* @uses   direct_datalinker::define_extra_conditions()
+	* @uses   direct_datalinker::define_extra_joins()
+	* @uses   direct_datalinker::get_subs()
+	* @uses   direct_db::define_row_conditions_encode()
+	* @uses   direct_debug()
+	* @uses   USE_debug_reporting
+	* @return array Array with pointers to the documents
+	* @since  v0.1.00
+*/
+	public function parse ($f_data)
+	{
+		global $direct_classes;
+		if (USE_debug_reporting) { direct_debug (5,"sWG/#echo(__FILEPATH__)# -web_service_xmlrpc_handler->parse (+f_data)- (#echo(__LINE__)#)"); }
+
+		$f_return = "<nil />";
+
+		if (isset ($f_data))
+		{
+			$f_type = gettype ($f_data);
+
+			if (($f_type == "array")&&(isset ($f_data[''])))
+			{
+				if ($f_data[''] == "dateTime.iso8601")
+				{
+					$f_data = array_pop ($f_data);
+					$f_type = "datetime";
+				}
+				else
+				{
+					$f_struct_check = true;
+					unset ($f_data['']);
+				}
+			}
+
+			switch ($f_type)
+			{
+			case "array":
+			{
+				reset ($f_data);
+				$f_key = key ($f_data);
+				if (!isset ($f_struct_check)) { $f_struct_check = is_string ($f_key); }
+
+				if ($f_struct_check) { $f_return = "<struct>"; }
+				else { $f_return = "<array>"; }
+
+				foreach ($f_data as $f_key => $f_value)
+				{
+					if ($f_struct_check) { $f_return .= "<member>".($direct_classes['xml_bridge']->array2xml_item_encoder (array ("tag" => "name","value" => $f_key)))."<value>".($this->parse ($f_value))."</value></member>"; }
+					else { $f_return .= "<data><value>".($this->parse ($f_value))."</value></data>"; }
+				}
+
+				if ($f_struct_check) { $f_return .= "</struct>"; }
+				else { $f_return .= "</array>"; }
+
+				break 1;
+			}
+			case "boolean":
+			{
+				if ($f_data) { $f_return = "<boolean>1</boolean>"; }
+				else { $f_return = "<boolean>0</boolean>"; }
+
+				break 1;
+			}
+			case "datetime":
+			{
+				$f_return = "<dateTime.iso8601>$f_data</dateTime.iso8601>";
+				break 1;
+			}
+			case "double":
+			case "float":
+			{
+				$f_return = "<double>$f_data</double>";
+				break 1;
+			}
+			case "integer":
+			{
+				$f_return = "<int>$f_data</int>";
+				break 1;
+			}
+			case "string":
+			{
+				$f_return = $direct_classes['xml_bridge']->array2xml_item_encoder (array ("tag" => "string","value" => $f_data));
+				break 1;
+			}
+			}
+		}
+
+		return /*#ifdef(DEBUG):direct_debug (7,"sWG/#echo(__FILEPATH__)# -web_service_xmlrpc_handler->parse ()- (#echo(__LINE__)#)",:#*/$f_return/*#ifdef(DEBUG):,true):#*/;
+	}
+
 	//f// direct_web_service_xmlrpc->parse_datetime ($f_timestamp = NULL)
 /**
-	* Returns an array for "parse_response ()" for the given timestamp.
+	* Returns an array for "parse ()" for the given timestamp.
 	*
 	* @param  array $f_timestamp UNIX timestamp or NULL for the current GMT time
 	* @uses   direct_debug()
@@ -476,7 +572,7 @@ return ("<value><struct>
 </struct></value>");
 	}
 
-	//f// direct_web_service_xmlrpc->parse_request ($f_data)
+	//f// direct_web_service_xmlrpc->parse_xmlrpc ($f_data)
 /**
 	* Parse a value XML array tree.
 	*
@@ -491,9 +587,9 @@ return ("<value><struct>
 	* @return array Array with pointers to the documents
 	* @since  v0.1.00
 */
-	protected function parse_request ($f_data)
+	public function parse_xmlrpc ($f_data)
 	{
-		if (USE_debug_reporting) { direct_debug (5,"sWG/#echo(__FILEPATH__)# -web_service_xmlrpc_handler->parse_request (+f_data)- (#echo(__LINE__)#)"); }
+		if (USE_debug_reporting) { direct_debug (5,"sWG/#echo(__FILEPATH__)# -web_service_xmlrpc_handler->parse_xmlrpc (+f_data)- (#echo(__LINE__)#)"); }
 		$f_return = NULL;
 
 		if (isset ($f_data['xml.item']))
@@ -518,12 +614,12 @@ return ("<value><struct>
 
 							foreach ($f_data as $f_entry)
 							{
-								if (isset ($f_entry)) { $f_return[] = $this->parse_request ($f_entry); }
+								if (isset ($f_entry)) { $f_return[] = $this->parse_xmlrpc ($f_entry); }
 							}
 						}
 						else
 						{
-							$f_data = $this->parse_request ($f_data);
+							$f_data = $this->parse_xmlrpc ($f_data);
 							if (isset ($f_data)) { $f_return = array ($f_data); }
 
 							break 1;
@@ -534,7 +630,7 @@ return ("<value><struct>
 				}
 				case "member":
 				{
-					if (isset ($f_data['name']['value'],$f_data['value'])) { $f_return = array ("name" => $f_data['name']['value'],"value" => $this->parse_request ($f_data['value'])); }
+					if (isset ($f_data['name']['value'],$f_data['value'])) { $f_return = array ("name" => $f_data['name']['value'],"value" => $this->parse_xmlrpc ($f_data['value'])); }
 					break 1;
 				}
 				case "struct":
@@ -550,13 +646,13 @@ return ("<value><struct>
 
 							foreach ($f_data as $f_entry_array)
 							{
-								$f_entry_array = $this->parse_request ($f_entry_array);
+								$f_entry_array = $this->parse_xmlrpc ($f_entry_array);
 								if (is_array ($f_entry_array)) { $f_return[$f_entry_array['name']] = $f_entry_array['value']; }
 							}
 						}
 						else
 						{
-							$f_entry_array = $this->parse_request ($f_data);
+							$f_entry_array = $this->parse_xmlrpc ($f_data);
 							if (is_array ($f_entry_array)) { $f_return = array ($f_entry_array['name'] => $f_entry_array['value']); }
 						}
 					}
@@ -566,7 +662,7 @@ return ("<value><struct>
 				case "value":
 				{
 					$f_data = array_pop ($f_data);
-					$f_data = $this->parse_request ($f_data);
+					$f_data = $this->parse_xmlrpc ($f_data);
 					if (isset ($f_data)) { $f_return = $f_data; }
 
 					break 1;
@@ -617,103 +713,7 @@ return ("<value><struct>
 			}
 		}
 
-		return /*#ifdef(DEBUG):direct_debug (7,"sWG/#echo(__FILEPATH__)# -web_service_xmlrpc_handler->parse_request ()- (#echo(__LINE__)#)",:#*/$f_return/*#ifdef(DEBUG):,true):#*/;
-	}
-
-	//f// direct_web_service_xmlrpc->parse_response ($f_data)
-/**
-	* Parse a value XML array tree.
-	*
-	* @param  array $f_data XML array tree
-	* @uses   direct_datalinker::define_extra_attributes()
-	* @uses   direct_datalinker::define_extra_conditions()
-	* @uses   direct_datalinker::define_extra_joins()
-	* @uses   direct_datalinker::get_subs()
-	* @uses   direct_db::define_row_conditions_encode()
-	* @uses   direct_debug()
-	* @uses   USE_debug_reporting
-	* @return array Array with pointers to the documents
-	* @since  v0.1.00
-*/
-	protected function parse_response ($f_data)
-	{
-		global $direct_classes;
-		if (USE_debug_reporting) { direct_debug (5,"sWG/#echo(__FILEPATH__)# -web_service_xmlrpc_handler->parse_response (+f_data)- (#echo(__LINE__)#)"); }
-
-		$f_return = "<nil />";
-
-		if (isset ($f_data))
-		{
-			$f_type = gettype ($f_data);
-
-			if (($f_type == "array")&&(isset ($f_data[''])))
-			{
-				if ($f_data[''] == "dateTime.iso8601")
-				{
-					$f_data = array_pop ($f_data);
-					$f_type = "datetime";
-				}
-				else
-				{
-					$f_struct_check = true;
-					unset ($f_data['']);
-				}
-			}
-
-			switch ($f_type)
-			{
-			case "array":
-			{
-				reset ($f_data);
-				$f_key = key ($f_data);
-				if (!isset ($f_struct_check)) { $f_struct_check = is_string ($f_key); }
-
-				if ($f_struct_check) { $f_return = "<struct>"; }
-				else { $f_return = "<array>"; }
-
-				foreach ($f_data as $f_key => $f_value)
-				{
-					if ($f_struct_check) { $f_return .= "<member>".($direct_classes['xml_bridge']->array2xml_item_encoder (array ("tag" => "name","value" => $f_key)))."<value>".($this->parse_response ($f_value))."</value></member>"; }
-					else { $f_return .= "<data><value>".($this->parse_response ($f_value))."</value></data>"; }
-				}
-
-				if ($f_struct_check) { $f_return .= "</struct>"; }
-				else { $f_return .= "</array>"; }
-
-				break 1;
-			}
-			case "boolean":
-			{
-				if ($f_data) { $f_return = "<boolean>1</boolean>"; }
-				else { $f_return = "<boolean>0</boolean>"; }
-
-				break 1;
-			}
-			case "datetime":
-			{
-				$f_return = "<dateTime.iso8601>$f_data</dateTime.iso8601>";
-				break 1;
-			}
-			case "double":
-			case "float":
-			{
-				$f_return = "<double>$f_data</double>";
-				break 1;
-			}
-			case "integer":
-			{
-				$f_return = "<int>$f_data</int>";
-				break 1;
-			}
-			case "string":
-			{
-				$f_return = $direct_classes['xml_bridge']->array2xml_item_encoder (array ("tag" => "string","value" => $f_data));
-				break 1;
-			}
-			}
-		}
-
-		return /*#ifdef(DEBUG):direct_debug (7,"sWG/#echo(__FILEPATH__)# -web_service_xmlrpc_handler->parse_response ()- (#echo(__LINE__)#)",:#*/$f_return/*#ifdef(DEBUG):,true):#*/;
+		return /*#ifdef(DEBUG):direct_debug (7,"sWG/#echo(__FILEPATH__)# -web_service_xmlrpc_handler->parse_xmlrpc ()- (#echo(__LINE__)#)",:#*/$f_return/*#ifdef(DEBUG):,true):#*/;
 	}
 
 	//f// direct_web_service_xmlrpc->response ()
@@ -762,7 +762,7 @@ return ("<value><struct>
 	*
 	* @param  array $f_data Response data
 	* @uses   direct_debug()
-	* @uses   direct_web_service_xmlrpc::parse_response()
+	* @uses   direct_web_service_xmlrpc::parse()
 	* @uses   USE_debug_reporting
 	* @since  v0.1.00
 */
@@ -773,8 +773,8 @@ return ("<value><struct>
 
 		if (isset ($f_data))
 		{
-			if ($this->data_multicall) { $this->data_result[] = "<value>".($this->parse_response ($f_data))."</value>"; }
-			else { $this->data_result = "<value>".($this->parse_response ($f_data))."</value>"; }
+			if ($this->data_multicall) { $this->data_result[] = "<value>".($this->parse ($f_data))."</value>"; }
+			else { $this->data_result = "<value>".($this->parse ($f_data))."</value>"; }
 		}
 		elseif ($this->data_multicall) { $this->data_result[] = "<value><nil /></value>"; }
 		else { $this->data_result = "<value><nil /></value>"; }
