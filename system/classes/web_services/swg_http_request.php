@@ -49,9 +49,9 @@ all development packets)
 Testing for required classes
 ------------------------------------------------------------------------- */
 
-$g_continue_check = true;
-if (defined ("CLASS_direct_web_http_request")) { $g_continue_check = false; }
+$g_continue_check = ((defined ("CLASS_direct_web_http_request")) ? false : true);
 if (($g_continue_check)&&(!defined ("CLASS_direct_web_functions"))) { $g_continue_check = $direct_classes['basic_functions']->include_file ($direct_settings['path_system']."/classes/swg_web_functions.php",1); }
+if (!defined ("CLASS_direct_web_functions")) { $g_continue_check = false; }
 
 if ($g_continue_check)
 {

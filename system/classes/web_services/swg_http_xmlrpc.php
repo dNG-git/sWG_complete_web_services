@@ -49,11 +49,13 @@ all development packets)
 Testing for required classes
 ------------------------------------------------------------------------- */
 
-$g_continue_check = true;
-if (defined ("CLASS_direct_web_http_xmlrpc")) { $g_continue_check = false; }
+$g_continue_check = ((defined ("CLASS_direct_web_http_xmlrpc")) ? false : true);
 if (($g_continue_check)&&(!defined ("CLASS_direct_web_service_xmlrpc"))) { $g_continue_check = $direct_classes['basic_functions']->include_file ($direct_settings['path_system']."/classes/dhandler/swg_web_service_xmlrpc.php",1); }
+if (!defined ("CLASS_direct_web_service_xmlrpc")) { $g_continue_check = false; }
 if (($g_continue_check)&&(!defined ("CLASS_direct_web_http_request"))) { $g_continue_check = $direct_classes['basic_functions']->include_file ($direct_settings['path_system']."/classes/web_services/swg_http_request.php",1); }
+if (!defined ("CLASS_direct_web_http_request")) { $g_continue_check = false; }
 if (($g_continue_check)&&(!defined ("CLASS_direct_xml"))) { $g_continue_check = $direct_classes['basic_functions']->include_file ($direct_settings['path_system']."/classes/swg_xml.php",1); }
+if (!defined ("CLASS_direct_xml")) { $g_continue_check = false; }
 
 if ($g_continue_check)
 {
@@ -163,10 +165,7 @@ Set up the caching variable
 			if (isset ($f_method))
 			{
 				$f_data = "<?xml version='1.0' encoding='$direct_local[lang_charset]' ?><methodCall><methodName>$f_method</methodName><params>";
-
-				if (is_array ($f_params)) { $f_data .= $this->parse_params ($f_params); }
-				else { $f_data .= "<param><value>".($this->class_xmlrpc->parse ($f_params))."</value></param>"; }
-
+				$f_data .= ((is_array ($f_params)) ? $this->parse_params ($f_params) : "<param><value>".($this->class_xmlrpc->parse ($f_params))."</value></param>");
 				$f_data .= "</params></methodCall>";
 			}
 			elseif (count ($this->methods) > 1)
@@ -181,10 +180,7 @@ Set up the caching variable
 			{
 				$f_method_array = array_pop ($this->methods);
 				$f_data = "<?xml version='1.0' encoding='$direct_local[lang_charset]' ?><methodCall><methodName>$f_method_array[0]</methodName><params>";
-
-				if (is_array ($f_method_array[1])) { $f_data .= $this->parse_params ($f_method_array[1]); }
-				else { $f_data .= "<param><value>".($this->class_xmlrpc->parse ($f_method_array[1]))."</value></param>"; }
-
+				$f_data .= ((is_array ($f_method_array[1])) ? $this->parse_params ($f_method_array[1]) : "<param><value>".($this->class_xmlrpc->parse ($f_method_array[1]))."</value></param>");
 				$f_data .= "</params></methodCall>";
 			}
 		}

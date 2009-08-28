@@ -56,9 +56,7 @@ if (!defined ("direct_product_iversion")) { exit (); }
 if (USE_debug_reporting) { direct_debug (1,"sWG/#echo(__FILEPATH__)# _main_ (#echo(__LINE__)#)"); }
 
 $direct_classes['basic_functions']->require_file ($direct_settings['path_system']."/classes/dhandler/swg_web_service_xmlrpc.php");
-
-if (direct_class_init ("web_service_xmlrpc")) { $g_request_array = $direct_classes['web_service_xmlrpc']->get (); }
-else { $g_request_array = NULL; }
+$g_request_array = ((direct_class_init ("web_service_xmlrpc")) ? $direct_classes['web_service_xmlrpc']->get () : NULL);
 
 if (($direct_classes['kernel']->service_init_rboolean ())&&(is_array ($g_request_array)))
 {

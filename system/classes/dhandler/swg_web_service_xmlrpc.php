@@ -50,8 +50,7 @@ all development packets)
 Testing for required classes
 ------------------------------------------------------------------------- */
 
-$g_continue_check = true;
-if (defined ("CLASS_direct_web_service_xmlrpc")) { $g_continue_check = false; }
+$g_continue_check = ((defined ("CLASS_direct_web_service_xmlrpc")) ? false : true);
 if (!defined ("CLASS_direct_data_handler")) { $g_continue_check = false; }
 
 if ($g_continue_check)
@@ -267,9 +266,7 @@ Set up additional variables :)
 			if (($f_input_data)&&(strlen ($f_input_data)))
 			{
 				$this->xml_object = new direct_xml ();
-
-				if (($this->xml_object)&&($this->xml_object->xml2array ($f_input_data))) { $f_continue_check = true; }
-				else { $f_continue_check = false; }
+				$f_continue_check = ((($this->xml_object)&&($this->xml_object->xml2array ($f_input_data))) ? true : false);
 			}
 			else { $f_continue_check = false; }
 
@@ -295,12 +292,7 @@ Set up additional variables :)
 			}
 		}
 
-		if (strlen ($this->method))
-		{
-			if (isset ($f_number,$this->data[$f_number])) { $f_return = array ($this->method,$this->data[$f_number]); }
-			else { $f_return = array ($this->method,$this->data); }
-		}
-
+		if (strlen ($this->method)) { $f_return = ((isset ($f_number,$this->data[$f_number])) ? array ($this->method,$this->data[$f_number]) : array ($this->method,$this->data)); }
 		return /*#ifdef(DEBUG):direct_debug (7,"sWG/#echo(__FILEPATH__)# -web_service_xmlrpc_handler->get ()- (#echo(__LINE__)#)",:#*/$f_return/*#ifdef(DEBUG):,true):#*/;
 	}
 
@@ -329,11 +321,7 @@ Set up additional variables :)
 			}
 			else { $f_data = $this->data; }
 
-			if (isset ($f_data))
-			{
-				if (isset ($f_number,$f_data[$f_number])) { $f_return = $f_data[$f_number]; }
-				else { $f_return = $f_data; }
-			}
+			if (isset ($f_data)) { $f_return = ((isset ($f_number,$f_data[$f_number])) ? $f_data[$f_number] : $f_data); }
 		}
 
 		return /*#ifdef(DEBUG):direct_debug (7,"sWG/#echo(__FILEPATH__)# -web_service_xmlrpc_handler->get_params ()- (#echo(__LINE__)#)",:#*/$f_return/*#ifdef(DEBUG):,true):#*/;
@@ -380,9 +368,7 @@ Set up additional variables :)
 					if (($direct_cachedata['core_time'] + $direct_settings['timeout'] + $direct_settings['timeout_core']) < (time ())) { $this->set_fault (direct_web_service_xmlrpc::$RESULT_504); }
 					else
 					{
-						if (isset ($f_base_module)) { $f_module = $f_base_module."."; }
-						else { $f_module = ""; }
-
+						$f_module = ((isset ($f_base_module)) ? $f_base_module."." : "");
 						$f_module .= $f_call_array['methodName'];
 						$f_module = $direct_classes['basic_functions']->inputfilter_filepath (str_replace (".","/",$f_module));
 						$f_module_array = explode ("/",$f_module);
@@ -481,8 +467,7 @@ Set up additional variables :)
 				$f_key = key ($f_data);
 				if (!isset ($f_struct_check)) { $f_struct_check = is_string ($f_key); }
 
-				if ($f_struct_check) { $f_return = "<struct>"; }
-				else { $f_return = "<array>"; }
+				$f_return = ($f_struct_check ? "<struct>" : "<array>");
 
 				foreach ($f_data as $f_key => $f_value)
 				{
@@ -490,16 +475,12 @@ Set up additional variables :)
 					else { $f_return .= "<data><value>".($this->parse ($f_value))."</value></data>"; }
 				}
 
-				if ($f_struct_check) { $f_return .= "</struct>"; }
-				else { $f_return .= "</array>"; }
-
+				$f_return .= ($f_struct_check ? "</struct>" : "</array>");
 				break 1;
 			}
 			case "boolean":
 			{
-				if ($f_data) { $f_return = "<boolean>1</boolean>"; }
-				else { $f_return = "<boolean>0</boolean>"; }
-
+				$f_return = ($f_data ? "<boolean>1</boolean>" : "<boolean>0</boolean>");
 				break 1;
 			}
 			case "datetime":
@@ -543,9 +524,7 @@ Set up additional variables :)
 	{
 		if (USE_debug_reporting) { direct_debug (7,"sWG/#echo(__FILEPATH__)# -web_service_xmlrpc_handler->parse_datetime (+f_timestamp)- (#echo(__LINE__)#)"); }
 
-		if (is_int ($f_timestamp)) { $f_return = gmdate ("c",$f_timestamp); }
-		else { $f_return = gmdate ("c"); }
-
+		$f_return = ((is_int ($f_timestamp)) ? gmdate ("c",$f_timestamp) : gmdate ("c"));
 		return /*#ifdef(DEBUG):direct_debug (7,"sWG/#echo(__FILEPATH__)# -web_service_xmlrpc_handler->handle ()- (#echo(__LINE__)#)",(:#*/array ("" => "dateTime.iso8601",$f_return)/*#ifdef(DEBUG):),true):#*/;
 	}
 
@@ -682,9 +661,7 @@ return ("<value><struct>
 			}
 			case "boolean":
 			{
-				if ($f_data['value']) { $f_return = true; }
-				else { $f_return = false; }
-
+				$f_return = ($f_data['value'] ? true : false);
 				break 1;
 			}
 			case "dateTime.iso8601":
@@ -740,10 +717,7 @@ return ("<value><struct>
 			foreach ($this->data_result as $f_result_entry)
 			{
 				$f_result .= "<data>";
-
-				if (is_array ($f_result_entry)) { $f_result .= $this->parse_fault ($f_result_entry); }
-				else { $f_result .= $f_result_entry; }
-
+				$f_result .= ((is_array ($f_result_entry)) ? $this->parse_fault ($f_result_entry) : $f_result_entry);
 				$f_result .= "</data>";
 			}
 
