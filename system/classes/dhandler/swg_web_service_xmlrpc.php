@@ -224,6 +224,7 @@ Informing the system about available functions
 		$this->functions['handle'] = true;
 		$this->functions['is_result_set'] = true;
 		$this->functions['parse'] = true;
+		$this->functions['parse_base64'] = true;
 		$this->functions['parse_datetime'] = true;
 		$this->functions['parse_fault'] = true;
 		$this->functions['parse_xmlrpc'] = true;
@@ -383,7 +384,7 @@ Set up additional variables :)
 
 							if (file_exists ($direct_settings['path_system']."/modules/dataport/xmlrpc/".$f_module))
 							{
-								$direct_classes['basic_functions']->include ($direct_settings['path_system']."/modules/dataport/xmlrpc/".$f_module,4,false);
+								$direct_classes['basic_functions']->include_file ($direct_settings['path_system']."/modules/dataport/xmlrpc/".$f_module,4,false);
 
 								if (($this->data_multicall)&&(!isset ($this->data_result[$this->data_multicall_current]))) { $this->set_fault (direct_web_service_xmlrpc::$RESULT_400); }
 								elseif (!isset ($this->data_result)) { $this->set_fault (direct_web_service_xmlrpc::$RESULT_400); }
@@ -447,15 +448,25 @@ Set up additional variables :)
 
 			if (($f_type == "array")&&(isset ($f_data[''])))
 			{
-				if ($f_data[''] == "dateTime.iso8601")
+				switch ($f_data[''])
+				{
+				case "dateTime.iso8601":
 				{
 					$f_data = array_pop ($f_data);
 					$f_type = "datetime";
+					break 1;
 				}
-				else
+				case "base64":
+				{
+					$f_data = array_pop ($f_data);
+					$f_type = "base64";
+					break 1;
+				}
+				default:
 				{
 					$f_struct_check = true;
 					unset ($f_data['']);
+				}
 				}
 			}
 
@@ -476,6 +487,11 @@ Set up additional variables :)
 				}
 
 				$f_return .= ($f_struct_check ? "</struct>" : "</array>");
+				break 1;
+			}
+			case "base64":
+			{
+				$f_return = $direct_classes['xml_bridge']->array2xml_item_encoder (array ("tag" => "base64","value" => $f_data));
 				break 1;
 			}
 			case "boolean":
@@ -510,6 +526,22 @@ Set up additional variables :)
 		return /*#ifdef(DEBUG):direct_debug (7,"sWG/#echo(__FILEPATH__)# -web_service_xmlrpc_handler->parse ()- (#echo(__LINE__)#)",:#*/$f_return/*#ifdef(DEBUG):,true):#*/;
 	}
 
+	//f// direct_web_service_xmlrpc->parse_base64 ($f_data = NULL)
+/**
+	* Returns an array for "parse ()" for the given BASE64 encoded string.
+	*
+	* @param  array $f_data BASE64 encoded string
+	* @uses   direct_debug()
+	* @uses   USE_debug_reporting
+	* @return array Encoded base64 XML-RPC type
+	* @since  v0.1.00
+*/
+	public function parse_base64 ($f_data = NULL)
+	{
+		if (USE_debug_reporting) { direct_debug (7,"sWG/#echo(__FILEPATH__)# -web_service_xmlrpc_handler->parse_base64 (+f_data)- (#echo(__LINE__)#)"); }
+		return /*#ifdef(DEBUG):direct_debug (7,"sWG/#echo(__FILEPATH__)# -web_service_xmlrpc_handler->parse_base64 ()- (#echo(__LINE__)#)",(:#*/array ("" => "base64",(base64_encode ($f_data)))/*#ifdef(DEBUG):),true):#*/;
+	}
+
 	//f// direct_web_service_xmlrpc->parse_datetime ($f_timestamp = NULL)
 /**
 	* Returns an array for "parse ()" for the given timestamp.
@@ -524,8 +556,8 @@ Set up additional variables :)
 	{
 		if (USE_debug_reporting) { direct_debug (7,"sWG/#echo(__FILEPATH__)# -web_service_xmlrpc_handler->parse_datetime (+f_timestamp)- (#echo(__LINE__)#)"); }
 
-		$f_return = ((is_int ($f_timestamp)) ? gmdate ("c",$f_timestamp) : gmdate ("c"));
-		return /*#ifdef(DEBUG):direct_debug (7,"sWG/#echo(__FILEPATH__)# -web_service_xmlrpc_handler->handle ()- (#echo(__LINE__)#)",(:#*/array ("" => "dateTime.iso8601",$f_return)/*#ifdef(DEBUG):),true):#*/;
+		$f_return = (($f_timestamp == NULL) ? gmdate ("Ymd\TH:i:sO") : gmdate ("Ymd\TH:i:sO",$f_timestamp));
+		return /*#ifdef(DEBUG):direct_debug (7,"sWG/#echo(__FILEPATH__)# -web_service_xmlrpc_handler->parse_datetime ()- (#echo(__LINE__)#)",(:#*/array ("" => "dateTime.iso8601",$f_return)/*#ifdef(DEBUG):),true):#*/;
 	}
 
 	//f// direct_web_service_xmlrpc->parse_fault ($f_data)
@@ -716,9 +748,9 @@ return ("<value><struct>
 
 			foreach ($this->data_result as $f_result_entry)
 			{
-				$f_result .= "<data>";
+				$f_result .= "<data><value><array><data>";
 				$f_result .= ((is_array ($f_result_entry)) ? $this->parse_fault ($f_result_entry) : $f_result_entry);
-				$f_result .= "</data>";
+				$f_result .= "</data></array></value></data>";
 			}
 
 			$f_result .= "</array></value></param></params>";

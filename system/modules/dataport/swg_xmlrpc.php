@@ -58,15 +58,27 @@ if (USE_debug_reporting) { direct_debug (1,"sWG/#echo(__FILEPATH__)# _main_ (#ec
 $direct_classes['basic_functions']->require_file ($direct_settings['path_system']."/classes/dhandler/swg_web_service_xmlrpc.php");
 $g_request_array = ((direct_class_init ("web_service_xmlrpc")) ? $direct_classes['web_service_xmlrpc']->get () : NULL);
 
-if (($direct_classes['kernel']->service_init_rboolean ())&&(is_array ($g_request_array)))
+if ($direct_classes['kernel']->service_init_rboolean ())
 {
-	$g_base_module = (isset ($direct_settings['dsd']['module']) ? $direct_settings['dsd']['module'] : NULL);
-	$direct_classes['web_service_xmlrpc']->handle ($g_base_module);
+	if (is_array ($g_request_array))
+	{
+		$g_base_module = (isset ($direct_settings['dsd']['module']) ? $direct_settings['dsd']['module'] : NULL);
+		$direct_classes['web_service_xmlrpc']->handle ($g_base_module);
 
-	if (!$direct_classes['web_service_xmlrpc']->is_result_set ()) { $direct_classes['web_service_xmlrpc']->set_fault (direct_web_service_xmlrpc::$RESULT_500); }
-	$direct_classes['web_service_xmlrpc']->response ();
+		if (!$direct_classes['web_service_xmlrpc']->is_result_set ()) { $direct_classes['web_service_xmlrpc']->set_fault (direct_web_service_xmlrpc::$RESULT_500); }
+		$direct_classes['web_service_xmlrpc']->response ();
+
+		$direct_cachedata['core_service_activated'] = true;
+	}
+	elseif ((isset ($direct_settings['dsd']['module']))&&(isset ($direct_settings['dsd']['path'])))
+	{
+		$g_base_module = $direct_classes['basic_functions']->inputfilter_filepath ($direct_settings['dsd']['module']);
+		if (($g_base_module)&&(file_exists ($direct_settings['path_system']."/modules/dataport/xmlrpc/{$g_base_module}/swg_index.php"))&&($direct_classes['basic_functions']->include_file ($direct_settings['path_system']."/modules/dataport/xmlrpc/{$g_base_module}/swg_index.php",4,false))) { $g_request_array = array (); }
+	}
 }
-else
+else { $g_request_array = NULL; }
+
+if (!is_array ($g_request_array))
 {
 	if (direct_class_init ("output")) { $direct_classes['output']->header (false,true,$direct_settings['p3p_url'],$direct_settings['p3p_cp']); }
 	header ("Content-type: text/xml; charset=".$direct_local['lang_charset']);
@@ -75,9 +87,9 @@ echo ("<?xml version='1.0' encoding='$direct_local[lang_charset]' ?><methodRespo
 <member><name>faultCode</name><value><int>-32600</int></value></member>
 <member><name>faultString</name><value><string>[400] Bad Request</string></value></member>
 </struct></value></fault></methodResponse>");
-}
 
-$direct_cachedata['core_service_activated'] = true;
+	$direct_cachedata['core_service_activated'] = true;
+}
 
 //j// EOF
 ?>
