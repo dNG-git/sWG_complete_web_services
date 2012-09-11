@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<swg_lang_file_v1>
+
+<cp><daemon>
+ <command><run><input input="string" /></run></command>
+
+ <done>
+  <issue>
+   <change><state><input input="string" /></state></change>
+   <edit><input input="string" /></edit>
+   <new><input input="string" /></new>
+  </issue>
+ </done>
+
+ <plugins><reload><input input="string" /></reload></plugins>
+
+ <status>
+  <completed><input input="string" /></completed>
+  <failed><input input="string" /></failed>
+  <running><input input="string" /></running>
+  <waiting><input input="string" /></waiting>
+ </status>
+
+ <task>
+  <input input="string" />
+  <started><input input="string" /></started>
+  <status><input input="string" /></status>
+
+  <update>
+   <latest><input input="string" /></latest>
+   <next><input input="string" /></next>
+  </update>
+
+  <reported>
+   <digitstart__1><input input="string" value="" /></digitstart__1>
+   <digitstart__2><input input="string" value="" /></digitstart__2>
+   <digitstart__3><input input="string" value="" /></digitstart__3>
+  </reported>
+ </task>
+
+ <queue><empty><input input="string" /></empty></queue>
+ <status><input input="string" /></status>
+ <uptime><input input="string" /></uptime>
+</daemon></cp>
+
+<errors><cp><daemon>
+ <iid><invalid><input input="string" /></invalid></iid>
+ <qid><invalid><input input="string" /></invalid></qid>
+ <rid><invalid><input input="string" /></invalid></rid>
+</daemon></cp></errors>
+
+</swg_lang_file_v1>

@@ -1,0 +1,7 @@
+_extras
+.*
+*.mo
+make*.py*
+nbproject
+system/classes/dNG/*.*
+web_services.*
